@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #author: Antonius Frie
 #Version 1.0!
+#email: antonius.frie@googlemail.com
 
 """Copyright 2012 Antonius Frie
 
@@ -374,23 +375,22 @@ for elem in newblocks:
 
 if __name__ == "__main__":
     pygame.init()
-    window = pygame.display.set_mode((384,216))#eigentlich 384*216
+    window = pygame.display.set_mode((384,216))#create window
     #pygame.font.init()
-    blocktypes,none,newblocknames,nbnstr = create_blocks()
-    itemsbar,ninstr = create_items()
+    blocktypes,none,newblocknames,nbnstr = create_blocks()#creates all blocks
+    itemsbar,ninstr = create_items()#creates all items
     itemsbar.append(none)
-    itemsbar.append(none)
-    for i in range(len(newblocknames)):
+    for i in range(len(newblocknames)):#makes all new blocks global variables so they can be used in draw()
         exec(nbnstr[i]+"=newblocknames[i]")
     #blocks = generate_blockslist(none)
     blocks = None
     blocksname = generate_blockslist("none")
-    ovPos = (9,9,1)
-    gesamt = float((MAXLENGTH - 40)*(MAXWIDTH - 40))
+    ovPos = (9,9,1)#sets the player position to the middle
+    gesamt = float((MAXLENGTH - 40)*(MAXWIDTH - 40))#calculates the total number of blocks in x-y-direction (for levelgenerator)
     action = raw_input("[n (New Map)/o (Open Map)]")
     name = None
     print "LOADING"
-    if action == "n":
+    if action == "n":#levelgenerator
         #window.blit(text2,(125,60)) --> LOADING
         for i in range(0,MAXWIDTH-40):
             for j in range(0,MAXLENGTH-40):
@@ -430,7 +430,7 @@ if __name__ == "__main__":
             prozent = round(round((i*j)/gesamt,2)*100)
             print int(prozent),"%"
             #window.blit(text2b,(170,100)) --> ...%
-    elif action == "o":
+    elif action == "o":#opens a map
         name = raw_input("name of map: ")
         try:
             d = open(name,"r")
@@ -440,17 +440,17 @@ if __name__ == "__main__":
             print "reading fail. please check data format"
     else:
         print "non-valid key. exiting"
-    set_block(blocks,ovPos,"head_back")
-    diffPosx = ovPos[0] - 9
+    set_block(blocks,ovPos,"head_back")#sets the player
+    diffPosx = ovPos[0] - 9#sets the difference (which is used by update to scroll automatically with the player) to the default values
     diffPosy = ovPos[1] - 9
     itembar = pygame.image.load('itembar.png')
     highlight = pygame.image.load('highlight.png')
-    hglpos = 0
-    itempos = 0
-    items = ["grass","dirt","tree","wood","leaves","sand","gravel","clay","stone","iron","coal","gold","diamond"]
-    items.extend(ninstr)
+    hglpos = 0#sets the position of the highlight to zero
+    itempos = 0#sets the position of the highlighted item to zero
+    items = ["grass","dirt","tree","wood","leaves","sand","gravel","clay","stone","iron","coal","gold","diamond"]#defines all used items
+    items.extend(ninstr)#extends by the new (blocks.py) defined items
     items.append("none")
-    NUMBEROFITEMS = len(items)
+    NUMBEROFITEMS = len(items)#calculates the length of all items
     #itemsbar = [grassitem,dirtitem,treeitem,wooditem,leavesitem,sanditem,gravelitem,clayitem,stoneitem,ironitem,coalitem,golditem,diamonditem,none,none]
     #window.blit(itembar,(247,332)) #siehe weiter oben in update
     #window.blit(highlight,(247+34,332)) #fuer items: plus 8 (x und y); weiter links plus 34
