@@ -1,1 +1,1 @@
-m25d: mini-minecraft with 2.5 dimensions
+m25d: minecraft-like game with 2.5 dimensions, written in Python
