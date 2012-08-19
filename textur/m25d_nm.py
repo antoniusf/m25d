@@ -126,6 +126,8 @@ def update(window,blocksname):
 
 def update_itembar(itempos,hglpos):
     """updates the itembar"""
+    global stackheight
+    global textfont
     window.blit(itembar,(139,148))
     window.blit(highlight,(139+34*hglpos,148))
     if hglpos == 0:
@@ -140,11 +142,15 @@ def update_itembar(itempos,hglpos):
         window.blit(itemsbar[itempos-2],(139+8,148+8))
         window.blit(itemsbar[itempos-1],(139+8+34,148+8))
         window.blit(itemsbar[itempos],(139+8+34*2,148+8))
+    text = textfont.render(str(stackheight[itempos]),True,(0,0,0),(255,255,255))
+    window.blit(text,(182,190))
     pygame.display.update()
 
 def itembarshift(itempos,hglpos,dirc):
     """shifts all items to the left(dirc = 0) or right(dirc = 1)"""
     global items
+    global window
+    global blocksname
     numberofitems = len(items)
     if dirc == 1:
         itempos += 1
@@ -159,7 +165,7 @@ def itembarshift(itempos,hglpos,dirc):
     elif itempos == numberofitems-1:
         hglpos = 2
     else: hglpos = 1
-    update_itembar(itempos,hglpos)
+    update_itembar(itempos, hglpos)
     return itempos, hglpos
 
 def build(ovPos,items,itempos,height):
@@ -426,7 +432,8 @@ for elem in newblocks:
 if __name__ == "__main__":
     pygame.init()
     window = pygame.display.set_mode((384,216))#create window
-    #pygame.font.init()
+    pygame.font.init()
+    textfont = pygame.font.Font(pygame.font.match_font('courier'),18)
     blocktypes,none,newblocknames,nbnstr = create_blocks()#creates all blocks
     itemtypes,itemnames = create_items()#creates all items
     itemsbar = [none,none,none]#define itemsbar, is empty by default
@@ -556,8 +563,10 @@ if __name__ == "__main__":
                     ovPos = move(ovPos,3)
                 if event.key == K_c:
                     itempos,hglpos = itembarshift(itempos,hglpos,1)
+                    update(window,blocksname)
                 if event.key == K_y:
                     itempos,hglpos = itembarshift(itempos,hglpos,0)
+                    update(window,blocksname)
                 if event.key == K_w:
                     items = build(ovPos,items,itempos,1)
                 if event.key == K_a:
