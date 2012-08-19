@@ -85,7 +85,7 @@ def create_items():
         name += 'item'
         exec(name+"=pygame.image.load('"+elem()[3]+"')")
         exec("newitemnames.append("+name+")")
-        ninstr.append(name[0:-4])
+        ninstr.append(name)
     itemtypes = [grassitem,dirtitem,treeitem,wooditem,leavesitem,sanditem,gravelitem,clayitem,stoneitem,ironitem,coalitem,golditem,diamonditem]
     itemnames = ['grassitem','dirtitem','treeitem','wooditem','leavesitem','sanditem','gravelitem','clayitem','stoneitem','ironitem','coalitem','golditem','diamonditem']
     itemtypes.extend(newitemnames)
@@ -161,6 +161,23 @@ def itembarshift(itempos,hglpos,dirc):
     return itempos, hglpos
 
 def build(ovPos,items,itempos,height):
+    def add_block_to_inventory(block):
+        if block in items:#if you already have blocks of this type in your inventory:
+            blockPos = items.index(block)#get the position of that blocktype
+            stackheight[blockPos] += 1#increase stackheight
+        else:
+            if not 'none' in items:#if you have no free place in your inventory
+                items.append('none')#create one
+            blockPos = items.index('none')#find the first free place
+            items[blockPos] = block#place the block there
+            if len(stackheight) < len(items):#if a new place was created, change stackheight, too
+                stackheight.append(1)
+            else:
+                stackheight[blockPos] = 1
+            if len(itemsbar) < len(items):#if a new place was created, change itemsbar, too
+                itemsbar.append(none)
+            itemsbar[blockPos] = itemtypes[itemnames.index(block+"item")]#sets the block in the itemsbar
+        set_block(blocksname,buildPos,"none")#removes the block from the map
     global viewdirc
     global itemsbar
     global stackheight
@@ -178,41 +195,26 @@ def build(ovPos,items,itempos,height):
         x = -1
     buildPos = (ovPos[0]+x,ovPos[1]+y,ovPos[2]+(height-1))
     block = items[itempos]
-    if get_block(blocksname,buildPos) == "none":
-        if stackheight[itempos] != 0:
-            action = ba[block]
-            if action != "":
-                exec(action)
-            else:
+    if get_block(blocksname,buildPos) == "none":#if there is no block, build one
+        if stackheight[itempos] != 0:#if you have a block in your inventory (at given position)
+            action = ba[block]#getting the action
+            if action != "":#if action is defined, execute
+                exec(action) in locals(),globals()
+            else:#else execute default action
                 stackheight[itempos] -= 1
                 set_block(blocksname,buildPos,block)
-        else:
+        else:#if theres no block in the inventory
             pass
-        if stackheight[itempos] == 0:
-            items[itempos]='none'
+        if stackheight[itempos] == 0:#if stackheight has become zero:
+            items[itempos]='none'#replace block in inventory with none
             itemsbar[itempos]=none
-    else:
-        action = da[block]
-        if action != "":
-            exec(action)
-        else:
-            block = get_block(blocksname,buildPos)
-            if block in items:
-                blockPos = items.index(block)
-                stackheight[blockPos] += 1
-            else:
-                if not 'none' in items:
-                    items.append('none')
-                blockPos = items.index('none')
-                items[blockPos] = block
-                if len(stackheight) < len(items):
-                    stackheight.append(1)
-                else:
-                    stackheight[blockPos] = 1
-                if len(itemsbar) < len(items):
-                    itemsbar.append(none)
-                itemsbar[blockPos] = itemtypes[itemnames.index(block+"item")]
-            set_block(blocksname,buildPos,"none")
+    else:#if there is a block, destroy it
+        block = get_block(blocksname,buildPos)#gets the type of the block to destroy
+        action = da[block]#getting the action
+        if action != "":#if action defined,execute it
+            exec(action) in locals(),globals()
+        else:#else execute default action:
+            add_block_to_inventory(block)#standartized function
     update(window,blocksname)
     return items
 
@@ -397,7 +399,7 @@ diffPosy = 0
 RANDOMNUMBER = getMainRandomNumber()
 viewdirc = 0
 ba = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
-da = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
+da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 newblocks = new_blocks()[0]
 for elem in newblocks:
     ba.update(elem()[0])
@@ -411,7 +413,7 @@ if __name__ == "__main__":
     itemtypes,itemnames = create_items()#creates all items
     itemsbar = [none,none,none]#define itemsbar, is empty by default
     items = ["none","none","none"]
-    stackheight = [5,0,0]
+    stackheight = [0,0,0]
     for i in range(len(newblocknames)):#makes all new blocks global variables so they can be used in draw()
         exec(nbnstr[i]+"=newblocknames[i]")
     #blocks = generate_blockslist(none)
@@ -468,8 +470,19 @@ if __name__ == "__main__":
             d = open(name,"r")
             exec("blocksname="+d.readline())
             exec("ovPos="+d.readline())
+            exec("items="+d.readline())
+            if len(items) > len(itemsbar):
+                while len(itemsbar) < len(items):
+                    itemsbar.append(none)
+            for block in items:
+                if block != 'none':
+                    itemsbar[items.index(block)] = itemtypes[itemnames.index(block+"item")]
+                elif block == 'none':
+                    itemsbar[items.index(block)] = none
+            exec("stackheight="+d.readline())
         except:
             print "reading fail. please check data format"
+            pygame.quit()
     else:
         print "non-valid key. exiting"
     set_block(blocks,ovPos,"head_back")#sets the player
@@ -495,6 +508,10 @@ if __name__ == "__main__":
                     d.write(a)
                     d.write("\n")
                     d.write(str(ovPos))
+                    d.write("\n")
+                    d.write(str(items))
+                    d.write("\n")
+                    d.write(str(stackheight))
                     d.close()
                 elif name == None:
                     a = str(blocksname)
@@ -504,6 +521,10 @@ if __name__ == "__main__":
                     d.write(a)
                     d.write("\n")
                     d.write(str(ovPos))
+                    d.write("\n")
+                    d.write(str(items))
+                    d.write("\n")
+                    d.write(str(stackheight))
                     d.close()
                 pygame.quit()
             elif event.type == KEYDOWN:
