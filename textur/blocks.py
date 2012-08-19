@@ -11,6 +11,12 @@ def new_blocks():
         image_name = "wolle_block.png"
         item_name = "wolle_item.png"
         return ba, da, image_name, item_name
+    def seed():
+        ba = dict(seed="")
+        da = dict(seed="")
+        image_name = "setzling.png"
+        item_name = "setzling_item.png"
+        return ba, da, image_name, item_name
 ############################################################
     def func_wrap(funcname):
         def grass_ba(blocksname,buildPos,set_block):
@@ -23,5 +29,5 @@ def new_blocks():
             func = ""
             print "function wrapper: couldn't find function "+funcname
         return func
-    all_new_blocks = [wool]
+    all_new_blocks = [wool,seed]
     return all_new_blocks,func_wrap

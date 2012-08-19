@@ -113,6 +113,8 @@ def update(window,blocksname):
                     b = blocksname[x][yi][z+1]
                     if b not in ["head_front","head_left","head_back","head_right"]:
                         blocksname[x][yi][z] = "dirt"
+                if blocksname[x][yi][z] == "seed" and random.random() <0.05:
+                    create_tree(blocksname,(x,yi,z))
                 blocktype = blocksname[x][yi][z]
                 exec("i = blocktypes.index("+blocktype+")")
                 blocktype = blocktypes[i]
@@ -389,6 +391,22 @@ def getMainRandomNumber():
     random.seed(time.time())
     return random.random()
 
+def create_tree(blocksname,(x,y,z)):
+    z -= 1
+    set_block(blocksname,(x,y,z+1),"tree")
+    set_block(blocksname,(x,y,z+2),"tree")
+    set_block(blocksname,(x+1,y,z+2),"leaves")
+    set_block(blocksname,(x-1,y,z+2),"leaves")
+    set_block(blocksname,(x,y+1,z+2),"leaves")
+    set_block(blocksname,(x,y-1,z+2),"leaves")
+    set_block(blocksname,(x,y,z+3),"leaves")
+
+def leaves_da(add_block_to_inventory):
+    if random.random() < 0.5:
+        add_block_to_inventory('seed')
+    else:
+        add_block_to_inventory('leaves')
+
 MAXWIDTH = 128
 MAXLENGTH = 128
 MAXHEIGHT = 4
@@ -399,7 +417,7 @@ diffPosy = 0
 RANDOMNUMBER = getMainRandomNumber()
 viewdirc = 0
 ba = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
-da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
+da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"leaves_da(add_block_to_inventory)","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 newblocks = new_blocks()[0]
 for elem in newblocks:
     ba.update(elem()[0])
