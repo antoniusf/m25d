@@ -168,6 +168,31 @@ def itembarshift(itempos,hglpos,dirc):
     update_itembar(itempos, hglpos)
     return itempos, hglpos
 
+def add_block_to_inventory_craft(block):
+    if block in items:#if you already have blocks of this type in your inventory:
+        blockPos = items.index(block)#get the position of that blocktype
+        stackheight[blockPos] += 1#increase stackheight
+    else:
+        if not 'none' in items:#if you have no free place in your inventory
+            items.append('none')#create one
+        blockPos = items.index('none')#find the first free place
+        items[blockPos] = block#place the block there
+        if len(stackheight) < len(items):#if a new place was created, change stackheight, too
+            stackheight.append(1)
+        else:
+            stackheight[blockPos] = 1
+        if len(itemsbar) < len(items):#if a new place was created, change itemsbar, too
+            itemsbar.append(none)
+        itemsbar[blockPos] = itemtypes[itemnames.index(block+"item")]#sets the block in the itemsbar
+
+def craft():
+    craftitem = items[itempos]
+    if ca[craftitem] != "":
+        stackheight[itempos] -= 1
+        add_block_to_inventory_craft(ca[craftitem])
+    else:
+        pass
+
 def build(ovPos,items,itempos,height):
     def add_block_to_inventory(block):
         if block in items:#if you already have blocks of this type in your inventory:
@@ -398,14 +423,18 @@ def getMainRandomNumber():
     return random.random()
 
 def create_tree(blocksname,(x,y,z)):
-    z -= 1
-    set_block(blocksname,(x,y,z+1),"tree")
-    set_block(blocksname,(x,y,z+2),"tree")
-    set_block(blocksname,(x+1,y,z+2),"leaves")
-    set_block(blocksname,(x-1,y,z+2),"leaves")
-    set_block(blocksname,(x,y+1,z+2),"leaves")
-    set_block(blocksname,(x,y-1,z+2),"leaves")
-    set_block(blocksname,(x,y,z+3),"leaves")
+    if z <= 1:
+        z -= 1
+        set_block(blocksname,(x,y,z+1),"tree")
+        set_block(blocksname,(x,y,z+2),"tree")
+        set_block(blocksname,(x+1,y,z+2),"leaves")
+        set_block(blocksname,(x-1,y,z+2),"leaves")
+        set_block(blocksname,(x,y+1,z+2),"leaves")
+        set_block(blocksname,(x,y-1,z+2),"leaves")
+        set_block(blocksname,(x,y,z+3),"leaves")
+    else:
+        pass
+    
 
 def leaves_da(add_block_to_inventory):
     if random.random() < 0.5:
@@ -424,10 +453,13 @@ RANDOMNUMBER = getMainRandomNumber()
 viewdirc = 0
 ba = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"leaves_da(add_block_to_inventory)","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
+ca = {"grass":"","dirt":"","tree":"wood","wood":"","leaves":"","sand":"","gravel":"","clay":"brick","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 newblocks = new_blocks()[0]
 for elem in newblocks:
+    print elem
     ba.update(elem()[0])
     da.update(elem()[1])
+    ca.update(elem()[4])
 
 if __name__ == "__main__":
     pygame.init()
@@ -579,6 +611,8 @@ if __name__ == "__main__":
                     ovPos = shift(ovPos,1)
                 if event.key == K_f:
                     ovPos = shift(ovPos,0)
+                if event.key == K_x:
+                    craft()
             elif event.type == KEYUP:
                 if event.key == K_w and (event.mod == KMOD_LCTRL or event.mod == KMOD_RCTRL):
                     pygame.event.post(pygame.event.Event(QUIT))
