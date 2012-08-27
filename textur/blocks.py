@@ -27,6 +27,27 @@ def new_blocks():
         image_name = "mauer_block.png"
         item_name = "mauer_item.png"
         return ba, da, image_name, item_name, ca
+    def gravel():
+        ba = dict(gravel="")
+        da = dict(gravel="")
+        ca = dict(gravel="stone")
+        image_name = "schotter_block.png"
+        item_name = "schotter_item.png"
+        return ba, da, image_name, item_name, ca
+    def glass():
+        ba = dict(glass="")
+        da = dict(glass="add_block_to_inventory('sand')")
+        ca = dict(glass="")
+        image_name = "glas_block.png"
+        item_name = "glas_item.png"
+        return ba, da, image_name, item_name, ca
+    def sand():
+        ba = dict(sand="")
+        da = dict(sand="")
+        ca = dict(sand="glass")
+        image_name = "sand_block.png"
+        item_name = "sand_item.png"
+        return ba, da, image_name, item_name, ca
 ############################################################
     def func_wrap(funcname):
         def grass_ba(blocksname,buildPos,set_block):
@@ -39,5 +60,5 @@ def new_blocks():
             func = ""
             print "function wrapper: couldn't find function "+funcname
         return func
-    all_new_blocks = [wool,seed,brick]
+    all_new_blocks = [wool,seed,brick,gravel,glass,sand]
     return all_new_blocks,func_wrap

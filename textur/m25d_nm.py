@@ -190,6 +190,10 @@ def craft():
     if ca[craftitem] != "":
         stackheight[itempos] -= 1
         add_block_to_inventory_craft(ca[craftitem])
+        if stackheight[itempos] == 0:#if stackheight has become zero:
+            items[itempos]='none'#replace block in inventory with none
+            itemsbar[itempos]=none
+        update(window,blocksname)
     else:
         pass
 
@@ -347,25 +351,24 @@ def move2(ovPos,newPos):
         return ov
     global blocksname
     global viewdirc
-    if get_block(blocksname,newPos) == "none":
-        if get_block(blocksname,(newPos[0],newPos[1],newPos[2]-1)) == "none":
+    if get_block(blocksname,newPos) == "none":#if there is no block in the direction you want to go
+        if get_block(blocksname,(newPos[0],newPos[1],newPos[2]-1)) == "none":# if there is also no block under you
             if newPos[2] >= 1:
-                newPos = newPos[0],newPos[1],newPos[2]-1
-        set_block(blocksname,ovPos,"none")
-        ovPos = newPos
-        set_block(blocksname,ovPos,set_viewdirc(viewdirc))
-        changeDP(ovPos)
-        update(window,blocksname)
+                newPos = newPos[0],newPos[1],newPos[2]-1#go down
     elif get_block(blocksname,(newPos[0],newPos[1],newPos[2]+1)) == "none":
         if newPos[2] < MAXHEIGHT-1:
             newPos = (newPos[0],newPos[1],newPos[2]+1)
-            set_block(blocksname,ovPos,"none")
-            ovPos = newPos
-            set_block(blocksname,ovPos,set_viewdirc(viewdirc))
-            changeDP(ovPos)
-            update(window,blocksname)
+        else:
+            newPos = ovPos
+            onp()
     else:
+        newPos = ovPos
         onp()
+    set_block(blocksname,ovPos,"none")
+    ovPos = newPos
+    set_block(blocksname,ovPos,set_viewdirc(viewdirc))
+    changeDP(ovPos)
+    update(window,blocksname)
     return ovPos
 
 def move(ovPos,dirc):
@@ -455,6 +458,7 @@ ba = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":""
 da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"leaves_da(add_block_to_inventory)","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 ca = {"grass":"","dirt":"","tree":"wood","wood":"","leaves":"","sand":"","gravel":"","clay":"brick","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 newblocks = new_blocks()[0]
+print "loading modules..."
 for elem in newblocks:
     print elem
     ba.update(elem()[0])
@@ -480,9 +484,9 @@ if __name__ == "__main__":
     gesamt = float((MAXLENGTH - 40)*(MAXWIDTH - 40))#calculates the total number of blocks in x-y-direction (for levelgenerator)
     action = raw_input("[n (New Map)/o (Open Map)]")
     name = None
-    print "LOADING"
     if action == "n":#levelgenerator
         #window.blit(text2,(125,60)) --> LOADING
+        print "LOADING"
         for i in range(0,MAXWIDTH-40):
             for j in range(0,MAXLENGTH-40):
                 height,bla = perlinNoise(i,j)
@@ -523,6 +527,7 @@ if __name__ == "__main__":
             #window.blit(text2b,(170,100)) --> ...%
     elif action == "o":#opens a map
         name = raw_input("name of map: ")
+        print "LOADING"
         try:
             d = open(name,"r")
             exec("blocksname="+d.readline())
