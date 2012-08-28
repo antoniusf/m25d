@@ -48,6 +48,41 @@ def new_blocks():
         image_name = "sand_block.png"
         item_name = "sand_item.png"
         return ba, da, image_name, item_name, ca
+    def wheat0():
+        ba = dict(wheat0="")
+        da = dict(wheat0="")
+        ca = dict(wheat0="")
+        image_name = "weizen_0.png"
+        item_name = "weizenkorn.png"
+        return ba, da, image_name, item_name, ca
+    def wheat1():
+        ba = dict(wheat1="")
+        da = dict(wheat1="add_block_to_inventory('wheat0')")
+        ca = dict(wheat1="")
+        image_name = "weizen_1.png"
+        item_name = "weizenkorn.png"
+        return ba, da, image_name, item_name, ca
+    def wheat2():
+        ba = dict(wheat2="")
+        da = dict(wheat2="add_block_to_inventory('wheat0')")
+        ca = dict(wheat2="")
+        image_name = "weizen_2.png"
+        item_name = "weizenkorn.png"
+        return ba, da, image_name, item_name, ca
+    def wheat3():
+        ba = dict(wheat3="")
+        da = dict(wheat3="add_block_to_inventory('flour');add_block_to_inventory('wheat0')")
+        ca = dict(wheat3="")
+        image_name = "weizen_3.png"
+        item_name = "weizenkorn.png"
+        return ba, da, image_name, item_name, ca
+    def flour():
+        ba = dict(flour="")
+        da = dict(flour="")
+        ca = dict(flour="")
+        image_name = "mehl.png"
+        item_name = "mehl_item.png"
+        return ba, da, image_name, item_name, ca
 ############################################################
     def func_wrap(funcname):
         def grass_ba(blocksname,buildPos,set_block):
@@ -60,5 +95,5 @@ def new_blocks():
             func = ""
             print "function wrapper: couldn't find function "+funcname
         return func
-    all_new_blocks = [wool,seed,brick,gravel,glass,sand]
+    all_new_blocks = [wool,seed,brick,gravel,glass,sand,wheat0,wheat1,wheat2,wheat3,flour]
     return all_new_blocks,func_wrap

@@ -113,8 +113,25 @@ def update(window,blocksname):
                     b = blocksname[x][yi][z+1]
                     if b not in ["head_front","head_left","head_back","head_right"]:
                         blocksname[x][yi][z] = "dirt"
-                if blocksname[x][yi][z] == "seed" and random.random() <0.05:
+                elif blocksname[x][yi][z] == "seed" and random.random() <0.05:
                     create_tree(blocksname,(x,yi,z))
+                elif blocksname[x][yi][z] == "leaves":
+                    if not blocksname[x][y+1][z] == "tree":
+                        if not blocksname[x+1][y][z] == "tree":
+                            if not blocksname[x-1][y][z] == "tree":    
+                                if not blocksname[x][y-1][z] == "tree":
+                                    if not blocksname[x][y][z-1] == "tree":
+                                        if random.random() < 0.5:
+                                            blocksname[x][yi][z] = "none"
+                elif blocksname[x][yi][z] == "wheat0":
+                    if random.random() < 0.1:
+                        blocksname[x][yi][z] = "wheat1"
+                elif blocksname[x][yi][z] == "wheat1":
+                    if random.random() < 0.1:
+                        blocksname[x][yi][z] = "wheat2"
+                elif blocksname[x][yi][z] == "wheat2":
+                    if random.random() < 0.1:
+                        blocksname[x][yi][z] = "wheat3"
                 blocktype = blocksname[x][yi][z]
                 exec("i = blocktypes.index("+blocktype+")")
                 blocktype = blocktypes[i]
@@ -456,7 +473,7 @@ RANDOMNUMBER = getMainRandomNumber()
 viewdirc = 0
 ba = {"grass":"","dirt":"","tree":"","wood":"","leaves":"","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 da = {"grass":"add_block_to_inventory('dirt')","dirt":"","tree":"","wood":"","leaves":"leaves_da(add_block_to_inventory)","sand":"","gravel":"","clay":"","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
-ca = {"grass":"","dirt":"","tree":"wood","wood":"","leaves":"","sand":"","gravel":"","clay":"brick","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
+ca = {"grass":"","dirt":"wheat0","tree":"wood","wood":"","leaves":"","sand":"","gravel":"","clay":"brick","stone":"","iron":"","coal":"","gold":"","diamond":"","none":""}
 newblocks = new_blocks()[0]
 print "loading modules..."
 for elem in newblocks:
@@ -547,6 +564,7 @@ if __name__ == "__main__":
             pygame.quit()
     else:
         print "non-valid key. exiting"
+        pygame.quit()
     set_block(blocks,ovPos,"head_back")#sets the player
     diffPosx = ovPos[0] - 9#sets the difference (which is used by update to scroll automatically with the player) to the default values
     diffPosy = ovPos[1] - 9
@@ -621,4 +639,4 @@ if __name__ == "__main__":
             elif event.type == KEYUP:
                 if event.key == K_w and (event.mod == KMOD_LCTRL or event.mod == KMOD_RCTRL):
                     pygame.event.post(pygame.event.Event(QUIT))
-
+##
