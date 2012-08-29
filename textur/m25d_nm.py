@@ -116,21 +116,21 @@ def update(window,blocksname):
                 elif blocksname[x][yi][z] == "seed" and random.random() <0.05:
                     create_tree(blocksname,(x,yi,z))
                 elif blocksname[x][yi][z] == "leaves":
-                    if not blocksname[x][y+1][z] == "tree":
-                        if not blocksname[x+1][y][z] == "tree":
-                            if not blocksname[x-1][y][z] == "tree":    
-                                if not blocksname[x][y-1][z] == "tree":
-                                    if not blocksname[x][y][z-1] == "tree":
-                                        if random.random() < 0.5:
+                    if not blocksname[x][yi+1][z] == "tree":
+                        if not blocksname[x+1][yi][z] == "tree":
+                            if not blocksname[x-1][yi][z] == "tree":    
+                                if not blocksname[x][yi-1][z] == "tree":
+                                    if not blocksname[x][yi][z-1] == "tree":
+                                        if random.random() < 0.05:
                                             blocksname[x][yi][z] = "none"
                 elif blocksname[x][yi][z] == "wheat0":
-                    if random.random() < 0.1:
+                    if random.random() < 0.07:
                         blocksname[x][yi][z] = "wheat1"
                 elif blocksname[x][yi][z] == "wheat1":
-                    if random.random() < 0.1:
+                    if random.random() < 0.07:
                         blocksname[x][yi][z] = "wheat2"
                 elif blocksname[x][yi][z] == "wheat2":
-                    if random.random() < 0.1:
+                    if random.random() < 0.07:
                         blocksname[x][yi][z] = "wheat3"
                 blocktype = blocksname[x][yi][z]
                 exec("i = blocktypes.index("+blocktype+")")
